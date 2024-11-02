@@ -1,6 +1,6 @@
 import http from 'http';
 
-const PORT = 8000;
+const PORT = process.env.PORT;
 
 const server = http.createServer((req,res) => {
     // res.setHeader('Content-Type', 'text/html')
@@ -11,10 +11,32 @@ const server = http.createServer((req,res) => {
     // res.statusMessage = "Fuck You";
     // res.statusMessage = "Fuck You";
 
-    res.writeHead(500, "fuckkkk!!!", {'Content-Type': 'application/json'})
+    // console.log(req.url);
+    // console.log(req.method)
+    // console.log(req)
 
 
-    res.end(JSON.stringify({message: 'Server Error'}));
+    // res.writeHead(200, "Yesaaaaaaaaaa!!!", {'Content-Type': 'text/html'})
+
+    // res.end('<h1>Hello World</h1>')
+
+
+    // res.end(JSON.stringify({message: 'Server Error'}));
+
+    if (req.url === '/'){
+        console.log("One superstar visited the about page")
+        res.writeHead(200, 'yay, you made it to the homepage', {'Content-Type': 'text/html'})
+        res.end('<h1>Homepage</h1>')
+        
+    }else if(req.url === '/about'){
+        console.log("One big head visited the about page");
+        res.writeHead(200, 'yay, you made it to the About page', {'Content-Type': 'text/html'})
+        res.end('<h1>Homepage</h1>')
+    }else{
+        console.log(`${req.url} Not Found`)
+        res.writeHead(404, 'This page was not found', {'Content-Type': 'text/html'})
+        res.end('<h1>Not Found</h1>')
+    }
 })
 
 server.listen(PORT, ()=> {
