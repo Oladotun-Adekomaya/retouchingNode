@@ -1,6 +1,14 @@
 import http from 'http';
-
+import fs from 'fs/promises';
+import url from 'url';
+import path from 'path';
 const PORT = process.env.PORT;
+
+// Get current path
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename)
+
+
 
 const server = http.createServer((req,res) => {
     // res.setHeader('Content-Type', 'text/html')
