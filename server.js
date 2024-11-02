@@ -8,9 +8,10 @@ const PORT = process.env.PORT;
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename)
 
+console.log(`${__dirname}, ${__filename}`);
 
 
-const server = http.createServer((req,res) => {
+const server = http.createServer(async (req,res) => {
     // res.setHeader('Content-Type', 'text/html')
 
     // res.write('<h1>Hello World</h1>');
@@ -33,22 +34,25 @@ const server = http.createServer((req,res) => {
 
     try {
         // Check if GET request
+        
         if (req.method === 'GET') {
-            
+            let filePath;
             if (req.url === '/'){
-                console.log("One superstar visited the about page")
-                res.writeHead(200, 'yay, you made it to the homepage', {'Content-Type': 'text/html'})
-                res.end('<h1>Homepage</h1>')
+                console.log("One superstar visited the home page")
+                filePath = path.join(__dirname,'public','index.html')
                 
             }else if(req.url === '/about'){
                 console.log("One big head visited the about page");
-                res.writeHead(200, 'yay, you made it to the About page', {'Content-Type': 'text/html'})
-                res.end('<h1>About</h1>')
+                filePath = path.join(__dirname,'public','about.html')
             }else{
-                console.log(`${req.url} Not Found`)
-                res.writeHead(404, 'This page was not found', {'Content-Type': 'text/html'})
-                res.end('<h1>Not Found</h1>')
+                throw new Error("Not Found");
             }
+
+            const data = await fs.readFile(filePath);
+            res.setHeader('Content-Type', 'text/html');
+            res.write(data);
+            res.end();
+
 
         } else {
             throw new Error('Method not allowed')
@@ -58,20 +62,20 @@ const server = http.createServer((req,res) => {
         res.end('Server Error')
     }
 
-    if (req.url === '/'){
-        console.log("One superstar visited the about page")
-        res.writeHead(200, 'yay, you made it to the homepage', {'Content-Type': 'text/html'})
-        res.end('<h1>Homepage</h1>')
+    // if (req.url === '/'){
+    //     console.log("One superstar visited the about page")
+    //     res.writeHead(200, 'yay, you made it to the homepage', {'Content-Type': 'text/html'})
+    //     res.end('<h1>Homepage</h1>')
         
-    }else if(req.url === '/about'){
-        console.log("One big head visited the about page");
-        res.writeHead(200, 'yay, you made it to the About page', {'Content-Type': 'text/html'})
-        res.end('<h1>About</h1>')
-    }else{
-        console.log(`${req.url} Not Found`)
-        res.writeHead(404, 'This page was not found', {'Content-Type': 'text/html'})
-        res.end('<h1>Not Found</h1>')
-    }
+    // }else if(req.url === '/about'){
+    //     console.log("One big head visited the about page");
+    //     res.writeHead(200, 'yay, you made it to the About page', {'Content-Type': 'text/html'})
+    //     res.end('<h1>About</h1>')
+    // }else{
+    //     console.log(`${req.url} Not Found`)
+    //     res.writeHead(404, 'This page was not found', {'Content-Type': 'text/html'})
+    //     res.end('<h1>Not Found</h1>')
+    // }
 })
 
 server.listen(PORT, ()=> {
