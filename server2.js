@@ -7,30 +7,101 @@ const users = [
     {id: 3, name: 'Fuck Doe'},
 ]
 
+// Logger middleware
+const logger = (req,res,next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+}
+
+
+// JSON middleware
+const jsonMiddleware = (req,res,next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next()
+}
+
+// Route handler for GET /api/users
+const getUserHandler = (req,res) =>{
+    res.write(JSON.stringify(users))
+    res.end()
+}
+
+// Route handler for GET /api/users/:id
+const getUserByIdHandler = (req,res) =>{
+    const id = req.url.split('/')[3];
+    const user = users.find(user => user.id === parseInt(id));
+    if (user) {
+        res.write(JSON.stringify(user))
+    } else {
+        
+        res.statusCode = 404;
+        res.write(JSON.stringify({message : "User not found"}))
+    }
+    res.end()
+}
+
+//Not found handler
+
+const notFoudHandler = (req,res) =>{
+    res.statusCode = 404;
+    res.write(JSON.stringify({message : "Route not found"}))
+    res.end()
+}
+
+
+
+
 const server = createServer((req,res) =>{
-    if (req.url === '/api/users' && req.method === 'GET') {
-        res.setHeader('Content-Type', 'application/json');
-        res.write(JSON.stringify(users))
-        res.end()
-    } else if(req.url.match(/\/api\/users\/([0-9]+)/) && req.method === "GET"){
-        res.setHeader('Content-Type', 'application/json');
-        const id = req.url.split('/')[3];
-        const user = users.find(user => user.id === parseInt(id));
-        if (user) {
-            res.write(JSON.stringify(user))
+    logger(req, res, () =>{ // You typically wrap your code in the middleware
+        if (req.url === '/api/users' && req.method === 'GET') {
+            res.setHeader('Content-Type', 'application/json');
+            res.write(JSON.stringify(users))
             res.end()
-        } else {
-            
+        } else if(req.url.match(/\/api\/users\/([0-9]+)/) && req.method === "GET"){
+            res.setHeader('Content-Type', 'application/json');
+            const id = req.url.split('/')[3];
+            const user = users.find(user => user.id === parseInt(id));
+            if (user) {
+                res.write(JSON.stringify(user))
+                res.end()
+            } else {
+                
+                res.statusCode = 404;
+                res.write(JSON.stringify({message : "User not found"}))
+                res.end()
+            }
+        }else {
+            res.setHeader('Content-Type', 'application/json');
             res.statusCode = 404;
-            res.write(JSON.stringify({message : "User not found"}))
+            res.write(JSON.stringify({message : "Route not found"}))
             res.end()
         }
-    }else {
-        res.setHeader('Content-Type', 'application/json');
-        res.statusCode = 404;
-        res.write(JSON.stringify({message : "Route not found"}))
-        res.end()
-    }
+    })
+
+
+    // if (req.url === '/api/users' && req.method === 'GET') {
+    //     res.setHeader('Content-Type', 'application/json');
+    //     res.write(JSON.stringify(users))
+    //     res.end()
+    // } else if(req.url.match(/\/api\/users\/([0-9]+)/) && req.method === "GET"){
+    //     res.setHeader('Content-Type', 'application/json');
+    //     const id = req.url.split('/')[3];
+    //     const user = users.find(user => user.id === parseInt(id));
+    //     if (user) {
+    //         res.write(JSON.stringify(user))
+    //         res.end()
+    //     } else {
+            
+    //         res.statusCode = 404;
+    //         res.write(JSON.stringify({message : "User not found"}))
+    //         res.end()
+    //     }
+    // }else {
+    //     res.setHeader('Content-Type', 'application/json');
+    //     res.statusCode = 404;
+    //     res.write(JSON.stringify({message : "Route not found"}))
+    //     res.end()
+    // }
 
 });
 
