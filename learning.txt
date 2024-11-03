@@ -2,3 +2,5 @@ This file contains all my questions, notes from what i learnt and answer to my q
 
 What is the difference between middleware and routers - https://stackoverflow.com/questions/58925276/what-is-the-difference-between-a-route-handler-and-middleware-function-in-expres
 How to use class in javascript ( especially calling it with new)
+- Learn promises 
+How to structure a large web app - i remember something like the views smth smth model 
